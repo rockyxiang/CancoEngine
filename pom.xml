@@ -16,12 +16,6 @@
 	</properties>
 
 	<dependencies>
-<!-- 		<dependency> -->
-<!-- 	        <groupId>org.jtester</groupId> -->
-<!-- 	        <artifactId>jtester</artifactId> -->
-<!-- 	        <version>0.8.2</version> -->
-<!-- 	        <scope>test</scope> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -124,11 +118,11 @@
 		    <artifactId>cglib</artifactId>
 		    <version>2.2.2</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 		<groupId>com.oracle</groupId> -->
-<!-- 		<artifactId>ojdbc14</artifactId> -->
-<!-- 		<version>10.2.0.2.0</version> -->
-<!-- 		</dependency> -->
+ 		<dependency>
+		  <groupId>com.oracle</groupId>
+		  <artifactId>ojdbc</artifactId>
+		  <version>10.2.0.5</version>
+		</dependency>
 	</dependencies>
 
 	<build>
