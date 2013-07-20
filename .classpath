@@ -8,6 +8,5 @@
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="D:/donfer/dev/apache-tomcat-6.0.35/lib/oracle-jdbc-10201.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
