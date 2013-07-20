@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties>  
+        <property name="dialect"  value="ORACLE" />
+    </properties>
+	<typeAliases>
+		 <typeAlias alias="jkWfTask" type="com.canco.bean.JkWfTask"/><!--任务  -->
+	</typeAliases>
+	<plugins>
+		<plugin interceptor="com.canco.pagination.PaginationInterception"></plugin>
+	</plugins>
+    <mappers>
+        <mapper resource="engine/persistence/JkWfTaskMapper.xml"/><!-- 任务 -->
+    </mappers>
+</configuration>

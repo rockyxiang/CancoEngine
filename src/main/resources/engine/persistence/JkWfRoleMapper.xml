@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- mybatis : <typeAlias alias="jkWfRole" type="com.donfer.domain.task.JkWfRole" 
+	/> <mapper resource="com/donfer/persistence/JkWfRoleMapper.xml"/> -->
+
+<mapper namespace="com.canco.persistence.task.JkWfRoleMapper">
+
+	<sql id="jkWfRoleBaseColumnSql">
+		ID,
+		ROLE_FLAG,
+		ROLE_NAME,
+		ROLE_DESC
+	</sql>
+
+	<sql id="jkWfRoleBaseWhereSql">
+		<if test="map!=null">
+			<where>
+				<if test="map.id != null">
+					ID = #{map.id}
+				</if>
+				<if test="map.roleFlag != null">
+					AND ROLE_FLAG = #{map.roleFlag}
+				</if>
+				<if test="map.roleName != null">
+					AND ROLE_NAME = #{map.roleName}
+				</if>
+				<if test="map.roleDesc != null">
+					AND ROLE_DESC = #{map.roleDesc}
+				</if>
+			</where>
+		</if>
+	</sql>
+
+	<insert id="insertJkWfRole" parameterType="jkWfRole">
+		INSERT INTO JK_WF_ROLE(
+		<include refid="jkWfRoleBaseColumnSql" />
+		)VALUES(
+		#{id},
+		#{roleFlag},
+		#{roleName},
+		#{roleDesc}
+		)
+	</insert>
+
+
+	<delete id="deleteJkWfRoleById" parameterType="String">
+		DELETE FROM
+		JK_WF_ROLE WHERE ID = #{id}
+	</delete>
+
+	<update id="updateJkWfRole" parameterType="jkWfRole">
+		UPDATE JK_WF_ROLE
+		<set>
+			<if test="roleFlag != null">
+				ROLE_FLAG = #{roleFlag} ,
+			</if>
+			<if test="roleName != null">
+				ROLE_NAME = #{roleName} ,
+			</if>
+			<if test="roleDesc != null">
+				ROLE_DESC = #{roleDesc} ,
+			</if>
+		</set>
+		WHERE
+		ID = #{id}
+	</update>
+
+	<select id="searchJkWfRoleByParams" parameterType="map"
+		resultMap="jkWfRoleMap">
+		SELECT
+		<include refid="jkWfRoleBaseColumnSql" />
+		FROM JK_WF_ROLE
+		<include refid="jkWfRoleBaseWhereSql" />
+	</select>
+
+	<resultMap type="JkWfRole" id="jkWfRoleMap">
+		<id column="ID" property="id" />
+		<result column="ROLE_FLAG" property="roleFlag" />
+		<result column="ROLE_NAME" property="roleName" />
+		<result column="ROLE_DESC" property="roleDesc" />
+	</resultMap>
+
+</mapper>
