@@ -173,7 +173,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements
 	}
 
 	@Override
-	public void deployWorkFlow(String busiType, InputStream inputStream) {
+	public void deployWorkFlow(InputStream inputStream) {
 		repositoryService.createDeployment().addZipInputStream(new ZipInputStream(inputStream)).deploy();
 	}
 

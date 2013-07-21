@@ -43,7 +43,7 @@ public interface CancoEngineService {
      * @param busiType
      * @param inputStream
      */
-    public void deployWorkFlow(String busiType , InputStream inputStream) ;
+    public void deployWorkFlow(InputStream inputStream) ;
     
     /**
      * 通过流程类型查询出所有部署信息。如流程类型为空，则查询所有
