@@ -3,6 +3,7 @@ package com.canco.service;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.BeanUtils;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.canco.bean.CancoEngineInner;
 import com.canco.bean.CancoEngineRuntime;
 import com.canco.config.CancoEngineConfig;
+import com.canco.ext.CancoEngineJudge;
+import com.canco.util.CancoEngineParse;
 
 /**
  * 引擎实现类
@@ -30,6 +33,9 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
   
   @Autowired
   private CancoEngineConfig cancoEngineConfig ;
+  
+  @Autowired
+  private CancoEngineJudge cancoEngineJudge ;
   
   private CancoEngineInner parse2EngineBean(CancoEngineRuntime cancoEngineRuntime){
     CancoEngineInner cancoEngineInner = (CancoEngineInner)cancoEngineRuntime;
@@ -124,6 +130,14 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 
   @Override
   public String nextInfos(String taskId) {
-    return null;
+	String processDefintionId = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult().getProcessDefinitionId();
+	List<Map<String,String>> taskInfos = nextTaskInfos(taskId) ;  
+	for( int i = 0 , size = taskInfos.size(); i<size; i++ ){
+		Map<String,String> taskInfo = taskInfos.get(i);
+		if(cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"), processDefintionId)){
+			taskInfos.remove(i);
+		}
+	}
+    return CancoEngineParse.list2Json(taskInfos);
   }
 }

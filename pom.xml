@@ -123,6 +123,11 @@
 		  <artifactId>ojdbc</artifactId>
 		  <version>10.2.0.5</version>
 		</dependency>
+		<dependency>
+		  <groupId>org.apache.commons</groupId>
+		  <artifactId>commons-jexl</artifactId>
+		  <version>2.1.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
