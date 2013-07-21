@@ -1,7 +1,10 @@
 package com.canco.service;
 
+import com.canco.bean.CancoEngineDeployment;
 import com.canco.bean.CancoEngineRuntime;
 
+import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,5 +37,19 @@ public interface CancoEngineService {
      * @return
      */
     public String  nextInfos(String taskId) ;
-
+    
+    /**
+     * 部署流程
+     * @param busiType
+     * @param inputStream
+     */
+    public void deployWorkFlow(String busiType , InputStream inputStream) ;
+    
+    /**
+     * 通过流程类型查询出所有部署信息。如流程类型为空，则查询所有
+     * @param busiType 流程KEY 
+     * @return
+     */
+    public List<CancoEngineDeployment> searchCancoEngineDeploymentsByBusiType(String busiType);
+    
 }
