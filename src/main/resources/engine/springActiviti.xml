@@ -15,7 +15,7 @@
 		<!-- 自动部署 
 		<property name="deploymentResources">
 			<list>
-				<value>classpath*:/deployments/*</value>
+				<value>classpath:/engine/deployments/*</value>
 			</list>
 		</property>-->
 	</bean>

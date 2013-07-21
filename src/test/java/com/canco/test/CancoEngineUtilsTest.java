@@ -15,7 +15,7 @@ public class CancoEngineUtilsTest extends TestCase{
 	public void testExpressionResult(){
 		Map<String,Object> expressionParam = new HashMap<String, Object>();
 		expressionParam.put("test", new Integer(0));
-		assertEquals(false, CancoEngineExpressionCodition.expressionResult("test>1", expressionParam));
+		assertEquals(false, CancoEngineExpressionCodition.expressionResult("test>1 || test<2", expressionParam));
 	}
 	
 }
