@@ -4,7 +4,7 @@
     <startEvent id="start" name="开始" activiti:initiator="owner"></startEvent>
     <userTask id="lysq" name="填写领用申请" activiti:assignee="#{owner}"></userTask>
     <sequenceFlow id="flow1" sourceRef="start" targetRef="lysq"></sequenceFlow>
-    <userTask id="usertask2" name="领导审批"></userTask>
+    <userTask id="usertask2" name="领导审批" activiti:assignee="#{owner}"></userTask>
     <sequenceFlow id="flow2" sourceRef="lysq" targetRef="usertask2"></sequenceFlow>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow3" sourceRef="usertask2" targetRef="exclusivegateway1"></sequenceFlow>
@@ -60,7 +60,7 @@
         <omgdi:waypoint x="252.0" y="250.0"></omgdi:waypoint>
         <omgdi:waypoint x="252.0" y="310.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="11.0" width="55.0" x="10.0" y="0.0"></omgdc:Bounds>
+          <omgdc:Bounds height="11.0" width="55.0" x="-29.0" y="0.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

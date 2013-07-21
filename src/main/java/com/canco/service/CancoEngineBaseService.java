@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import org.activiti.engine.*;
-import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -25,6 +28,8 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Attachment;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -731,8 +736,16 @@ public abstract class CancoEngineBaseService {
     private String mapKey;
   }
   
+  protected List<Comment> getComments(String taskId){
+     if(StringUtils.isEmpty(taskId)){
+       return null;
+     }
+	 HistoricTaskInstance taskInstance =  historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+	 return taskService.getProcessInstanceComments(taskInstance.getProcessInstanceId());
+  } 
+  
   /**
-   * 
+   * 获取formkey中配置的文件内容
    * @param taskId 
    * @param busiType
    * @return 获取配置内容
@@ -744,12 +757,12 @@ public abstract class CancoEngineBaseService {
     String formKey = null ;
     if(StringUtils.isNotEmpty(taskId)){
       formKey = formService.getTaskFormData(taskId).getFormKey();
-      Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-      if(task == null){
-        formKey += getTaskState("false");
-      }else{
-        formKey += getTaskState("true");
-      }
+      HistoricTaskInstance taskInstance =  historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+      if(taskInstance.getEndTime() == null){
+          formKey += getTaskState("false");
+        }else{
+          formKey += getTaskState("true");
+        }
     }else{
       formKey = formService.getStartFormKey(busiType);
       formKey += getTaskState("false");

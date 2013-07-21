@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
@@ -125,7 +126,20 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 
   @Override
   public String pageInitParam(String taskId , String busiType) {
-    return getFormKeyByBusiTypeOrTaskId(taskId, busiType);
+	String resultStr = getFormKeyByBusiTypeOrTaskId(taskId, busiType) ;
+	List<Comment> comments = getComments(taskId);  
+	if(comments != null){
+		resultStr += ",\"comments\":[";
+		for(Comment comment : comments){
+			resultStr += "{\"userId\":\""+comment.getUserId() + "\"";
+			//TODO 这里需要将时间修改为字符串
+			resultStr += ",\"time\":\""+comment.getTime()+"\"" ;
+			resultStr += ","+comment.getFullMessage()+"},";
+		}
+		resultStr = resultStr.substring(0,resultStr.length()-2);
+		resultStr += "]";
+	}  
+    return resultStr;
   }
 
   @Override
@@ -134,7 +148,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 	List<Map<String,String>> taskInfos = nextTaskInfos(taskId) ;  
 	for( int i = 0 , size = taskInfos.size(); i<size; i++ ){
 		Map<String,String> taskInfo = taskInfos.get(i);
-		if(cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"), processDefintionId)){
+		if(!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"), processDefintionId)){
 			taskInfos.remove(i);
 		}
 	}

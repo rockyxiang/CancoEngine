@@ -18,11 +18,21 @@ public class CancoEngineRuntime {
      * 当前用户
      */
     private String userId ;
+    
+    /**
+     * 用户中文姓名
+     */
+    private String userName ;
 
     /**
      * 当前用户所在部门
      */
     private String deptId ;
+    
+    /**
+     * 当前所在部门名称
+     */
+    private String deptName ;
 
     /**
      * 下个环节处理人
@@ -54,7 +64,23 @@ public class CancoEngineRuntime {
      */
     private String busiType ;
     
-    public String getBusiType() {
+    public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getDeptName() {
+		return deptName;
+	}
+
+	public void setDeptName(String deptName) {
+		this.deptName = deptName;
+	}
+
+	public String getBusiType() {
       return busiType;
     }
     
@@ -108,7 +134,15 @@ public class CancoEngineRuntime {
             variableMap.put("deptId" , getDeptId());
         }
         if(StringUtils.isEmpty(getCondition())){
-            variableMap.put("condition" , getCondition());
+        	if(getCondition().contains(";")){
+        		String []conditions = getCondition().split(";");
+        		for(String cond : conditions){
+        			String[] resultCondition = cond.split("\\:");
+        			variableMap.put(resultCondition[0], resultCondition[1]);
+        		}
+        	}else{
+        		variableMap.put("condition" , getCondition());
+        	}
         }
         return variableMap;
     }
