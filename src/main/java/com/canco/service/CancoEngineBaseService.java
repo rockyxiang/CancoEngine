@@ -548,10 +548,6 @@ public abstract class CancoEngineBaseService {
             realPvms = pvmActivity.getOutgoingTransitions();
             for (PvmTransition realPvm : realPvms) {
               ActivityImpl realActivty = (ActivityImpl) realPvm.getDestination();
-              LOGGER.debug("======================");
-              LOGGER.debug("{}", realActivty.getActivityBehavior());
-              LOGGER.debug("{}", realActivty.getId());
-              LOGGER.debug("======================");
               taskDefinitionMap(realPvm.getDestination(), results, realActivty.getActivityBehavior(), realPvm.getId());
             }
           } else {
@@ -566,12 +562,11 @@ public abstract class CancoEngineBaseService {
 
   private void taskDefinitionMap(PvmActivity pvm, List<Map<String, String>> results, ActivityBehavior activityBehavior, String flowId) {
     Map<String, String> resultMap = new HashMap<String, String>();
-    resultMap.put("taskKey", pvm.getId());
-    resultMap.put("taskName", pvm.getProperty("name").toString());
+    resultMap.put(WORK_FLOW_ELMENTS.TASK_KEY.toString(), pvm.getId());
+    resultMap.put(WORK_FLOW_ELMENTS.TASK_NAME.toString(), pvm.getProperty("name").toString());
     boolean isSelectPerson = (activityBehavior instanceof NoneEndEventActivityBehavior) ? false : true;
-    LOGGER.debug(" this is isSelect : {}", isSelectPerson);
-    resultMap.put("isSelectPerson", String.valueOf(isSelectPerson));
-    resultMap.put("flowId", flowId);
+    resultMap.put(WORK_FLOW_ELMENTS.IS_SELECTED_PERSON.toString(), String.valueOf(isSelectPerson));
+    resultMap.put(WORK_FLOW_ELMENTS.FLOW_ID.toString(), flowId);
     results.add(resultMap);
   }
 
@@ -625,17 +620,6 @@ public abstract class CancoEngineBaseService {
     return null;
   }
 
-  public Map<String, Object> searchStartUserByProcessId(String processInstanceId) {
-    HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-    Map<String, Object> resultMap = new HashMap<String, Object>();
-    resultMap.put("startTime", historicProcessInstance.getStartTime());
-    resultMap.put("endtime", historicProcessInstance.getStartTime());
-    resultMap.put("taskKey", historicProcessInstance.getStartActivityId());
-    resultMap.put("taskName", "起草");
-    resultMap.put("startUser", historicProcessInstance.getStartUserId());
-    return resultMap;
-  }
-
   protected String searchTaskIdByBussinessKeyAndUserId(String bussinessKey, String userId) {
     HistoricProcessInstance instance = historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey(bussinessKey).singleResult();
     if (instance == null) {
@@ -651,7 +635,6 @@ public abstract class CancoEngineBaseService {
   }
 
   protected List<Map<String, Object>> searchCurrentInfoMapByTaskId(String taskId) {
-    // TODO 图形化流程跟踪
     HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
     String processInstanceId = historicTaskInstance.getProcessInstanceId();
     boolean isFinished = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).finished().count() > 0 ? true : false;
@@ -671,9 +654,6 @@ public abstract class CancoEngineBaseService {
     for (ActivityImpl activityImpl : activityImpls) {
       if (isFinished) {
         if (activityImpl.getActivityBehavior() instanceof NoneEndEventActivityBehavior) {
-          LOGGER.debug("============================");
-          LOGGER.debug(" ACTIVITI ID : {}", activityImpl.getId());
-          LOGGER.debug("============================");
           if (endId != null && activityImpl.getId().equals(endId)) {
             Map<String, Object> activityMap = new HashMap<String, Object>();
             initFollowImageMap(activityMap, activityImpl);
@@ -722,10 +702,11 @@ public abstract class CancoEngineBaseService {
     activityMap.put("taskName", activityImpl.getProperties().get("name"));
   }
 
-  protected enum DfEngineBaseFollowEnum {
-    START_TIME("startTime"), END_TIME("endTime"), TASK_KEY("taskKey"), TASK_NAME("taskName");
+  protected enum WORK_FLOW_ELMENTS {
+    START_TIME("startTime"), END_TIME("endTime"), TASK_KEY("taskKey"), TASK_NAME("taskName") ,
+    FLOW_ID("flowId") , IS_SELECTED_PERSON("isSelectPerson");
 
-    private DfEngineBaseFollowEnum(String mapKey) {
+    private WORK_FLOW_ELMENTS(String mapKey) {
       this.mapKey = mapKey;
     }
 

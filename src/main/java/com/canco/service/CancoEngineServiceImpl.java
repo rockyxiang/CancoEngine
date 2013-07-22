@@ -24,16 +24,15 @@ import com.canco.bean.CancoEngineRuntime;
 import com.canco.config.CancoEngineConfig;
 import com.canco.ext.CancoEngineJudge;
 import com.canco.util.CancoEngineParse;
+import com.canco.util.TimeUtil;
 
 /**
  * 引擎实现类
  */
 @Service
-public class CancoEngineServiceImpl extends CancoEngineBaseService implements
-		CancoEngineService {
+public class CancoEngineServiceImpl extends CancoEngineBaseService implements CancoEngineService {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(CancoEngineServiceImpl.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(CancoEngineServiceImpl.class);
 
 	@Autowired
 	private CancoEngineTaskService cancoEngineTaskService;
@@ -148,8 +147,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements
 			resultStr += ",\"comments\":[";
 			for (Comment comment : comments) {
 				resultStr += "{\"userId\":\"" + comment.getUserId() + "\"";
-				// TODO 这里需要将时间修改为字符串
-				resultStr += ",\"time\":\"" + comment.getTime() + "\"";
+				resultStr += ",\"time\":\"" + TimeUtil.dateToString(comment.getTime()) + "\"";
 				resultStr += "," + comment.getFullMessage() + "},";
 			}
 			resultStr = resultStr.substring(0, resultStr.length() - 2);
@@ -165,8 +163,13 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements
 		List<Map<String, String>> taskInfos = nextTaskInfos(taskId);
 		for (int i = 0, size = taskInfos.size(); i < size; i++) {
 			Map<String, String> taskInfo = taskInfos.get(i);
-			if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionId)) {
-				taskInfos.remove(i);
+			final String formKey = formService.getTaskFormKey(processDefintionId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString());
+			Map<String,Object> parsedMap = CancoEngineParse.parseTaskInfo(formKey) ;
+			//TODO 解析用户并返回最终结果
+			if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION)){
+				if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionId)) {
+					taskInfos.remove(i);
+				}
 			}
 		}
 		return CancoEngineParse.list2Json(taskInfos);
@@ -188,12 +191,24 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements
 		}
 		for(ProcessDefinition processDefinition : processDefinitions){
 			CancoEngineDeployment cancoEngineDeployment = new CancoEngineDeployment();
-			cancoEngineDeployment.setDeployId(processDefinition.getId());
+			cancoEngineDeployment.setDeployId(processDefinition.getDeploymentId());
 			cancoEngineDeployment.setProcessBpmnImageName(processDefinition.getDiagramResourceName());
 			cancoEngineDeployment.setProcessBpmnName(processDefinition.getResourceName());
 			cancoEngineDeployment.setProcessDefinitionName(processDefinition.getName());
 			cancoEngineDeployments.add(cancoEngineDeployment);
 		}
 		return cancoEngineDeployments;
+	}
+
+	@Override
+	public InputStream imageInputStream(String deploymentId , RESOURCE_TYPE resourceType)  {
+		ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
+		String resourceName = "" ;
+		if("xml".equals(resourceType.toString())){
+			resourceName = definition.getResourceName();
+		}else{
+			resourceName = definition.getDiagramResourceName();
+		}
+		return repositoryService.getResourceAsStream(deploymentId, resourceName);
 	}
 }

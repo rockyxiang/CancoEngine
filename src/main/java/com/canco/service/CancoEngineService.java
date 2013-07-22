@@ -1,11 +1,10 @@
 package com.canco.service;
 
-import com.canco.bean.CancoEngineDeployment;
-import com.canco.bean.CancoEngineRuntime;
-
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
+
+import com.canco.bean.CancoEngineDeployment;
+import com.canco.bean.CancoEngineRuntime;
 
 /**
  *
@@ -15,6 +14,19 @@ import java.util.Map;
  *
  */
 public interface CancoEngineService {
+	
+	public static enum RESOURCE_TYPE {
+		XML("xml") , IMAGE("image") ;
+		
+		String value = null ;
+		private RESOURCE_TYPE(String value){
+			this.value = value ;
+		}
+		
+		public String toString(){
+			return value ;
+		}
+	}
 
     /**
      * 提交一下步处理
@@ -51,5 +63,13 @@ public interface CancoEngineService {
      * @return
      */
     public List<CancoEngineDeployment> searchCancoEngineDeploymentsByBusiType(String busiType);
+    
+    /**
+     * 获取流文件或流图片输出流
+     * @param deploymentId 部署ID
+     * @param resourceType xml或者image
+     * @return
+     */
+    public InputStream imageInputStream(String deploymentId , RESOURCE_TYPE resourceType) ;
     
 }
