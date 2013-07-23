@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
+import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
@@ -24,7 +26,9 @@ import com.canco.bean.CancoEngineRuntime;
 import com.canco.config.CancoEngineConfig;
 import com.canco.ext.CancoEngineJudge;
 import com.canco.util.CancoEngineParse;
+import com.canco.util.SpringExpressionConvert;
 import com.canco.util.TimeUtil;
+import com.canco.util.CancoEngineParse.PARSE_INNER;
 
 /**
  * 引擎实现类
@@ -105,10 +109,8 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		return taskId;
 	}
 
-	private void createDoing(CancoEngineInner cancoEngineInner,
-			String processInstanceId) {
-		List<Task> tasks = taskService.createTaskQuery()
-				.processInstanceId(processInstanceId).list();
+	private void createDoing(CancoEngineInner cancoEngineInner, String processInstanceId) {
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
 		if (tasks != null && tasks.size() > 0) {
 			if (tasks.size() == 1) {
 				Task task = tasks.get(0);
@@ -119,8 +121,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 				List<CancoEngineInner> cancoEngineInners = new ArrayList<CancoEngineInner>();
 				for (Task task : tasks) {
 					try {
-						CancoEngineInner inner = (CancoEngineInner) BeanUtils
-								.cloneBean(cancoEngineInner);
+						CancoEngineInner inner = (CancoEngineInner) BeanUtils.cloneBean(cancoEngineInner);
 						inner.setTaskId(task.getId());
 						inner.setDealUserId(task.getAssignee());
 						cancoEngineInners.add(inner);
@@ -157,22 +158,34 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 	}
 
 	@Override
-	public String nextInfos(String taskId) {
-		String processDefintionId = historyService.createHistoricTaskInstanceQuery().taskId(taskId)
-				.singleResult().getProcessDefinitionId();
+	public String nextInfos(String taskId , Map<String,Object> clientMap) {
+		HistoricTaskInstance historicTaskInstance =  historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+		String processDefintionId = historicTaskInstance.getProcessDefinitionId();
+		List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(historicTaskInstance.getProcessInstanceId()).list();
+		for(HistoricVariableInstance variable : variables){
+			clientMap.put(variable.getVariableName(), variable.getValue());
+		}
+		List<Map<String,Object>> resultTaskInfos = new ArrayList<Map<String,Object>>();
 		List<Map<String, String>> taskInfos = nextTaskInfos(taskId);
 		for (int i = 0, size = taskInfos.size(); i < size; i++) {
 			Map<String, String> taskInfo = taskInfos.get(i);
 			final String formKey = formService.getTaskFormKey(processDefintionId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString());
 			Map<String,Object> parsedMap = CancoEngineParse.parseTaskInfo(formKey) ;
-			//TODO 解析用户并返回最终结果
-			if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION)){
+			if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION.toString())){
 				if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionId)) {
 					taskInfos.remove(i);
+					break;
 				}
 			}
+			SpringExpressionConvert springExpressionConvert = new SpringExpressionConvert(parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString(), clientMap);
+			List<Map<String,String>> userInfos = (List<Map<String,String>>)springExpressionConvert.resolverExpression();
+			parsedMap.remove(PARSE_INNER.EXPRESSIONS.toString());
+			parsedMap.remove(PARSE_INNER.IS_JUDGE_CONDITION.toString());
+			parsedMap.put(PARSE_INNER.USERS.toString(), userInfos);
+			parsedMap.putAll(taskInfo);
+			resultTaskInfos.add(parsedMap);
 		}
-		return CancoEngineParse.list2Json(taskInfos);
+		return CancoEngineParse.list2Json(resultTaskInfos);
 	}
 
 	@Override

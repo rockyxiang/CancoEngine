@@ -2,6 +2,7 @@ package com.canco.service;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import com.canco.bean.CancoEngineDeployment;
 import com.canco.bean.CancoEngineRuntime;
@@ -48,7 +49,7 @@ public interface CancoEngineService {
      * @param taskId
      * @return
      */
-    public String  nextInfos(String taskId) ;
+    public String  nextInfos(String taskId , Map<String,Object> clientMap) ;
     
     /**
      * 部署流程
