@@ -47,6 +47,10 @@ public final class CancoEngineParse {
 	return JSON.toJSONString(paserList, true);
   }
   
+  public static String map2Json(Map<String,Object> parseMap) {
+	  return JSON.toJSONString(parseMap);
+  }
+  
   public static Map<String,Object> parseTaskInfo(final String config){
 	JSONObject json = JSON.parseObject(config);
 	JSONObject taskInfo = (JSONObject)json.get(PARSE_INNER.TASK_INFO.toString());
