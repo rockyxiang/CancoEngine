@@ -3,6 +3,7 @@ package com.canco.service;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
@@ -225,5 +226,15 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 			resourceName = definition.getDiagramResourceName();
 		}
 		return repositoryService.getResourceAsStream(deploymentId, resourceName);
+	}
+
+	@Override
+	public String followText(String taskId) {
+		return null;
+	}
+
+	@Override
+	public String followImage(String taskId) {
+		return null;
 	}
 }

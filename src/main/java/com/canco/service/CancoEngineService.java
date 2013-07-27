@@ -73,4 +73,18 @@ public interface CancoEngineService {
      */
     public InputStream resourceInputStream(String deploymentId , RESOURCE_TYPE resourceType) ;
     
+    /**
+     * 流程跟踪
+     * @param taskId 任务ID
+     * @return [{"taskName(环节名称)":"起草","dealUser":"","startTime":"","endTime":""}]
+     */
+    public String followText(String taskId) ;
+    
+    /**
+     * 图形化流程跟踪
+     * @param taskId
+     * @return
+     */
+    public String followImage(String taskId);
+    
 }
