@@ -14,7 +14,7 @@
 	<!--    <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/dfengine"/>-->
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-		<property name="url" value="jdbc:oracle:thin:@localhost:1521:ORCL" />
+		<property name="url" value="jdbc:oracle:thin:@192.168.1.103:1521:ORCL" />
 		<property name="username" value="activiti" />
 		<property name="password" value="activiti" />
 	</bean>

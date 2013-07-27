@@ -742,10 +742,11 @@ public abstract class CancoEngineBaseService {
       if(taskInstance.getEndTime() == null){
           formKey += getTaskState("false");
         }else{
-          formKey += getTaskState("true");
+          formKey = "\"flowgz\":true ," + getTaskState("true");
         }
     }else{
-      formKey = formService.getStartFormKey(busiType);
+      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(busiType).latestVersion().singleResult() ;
+      formKey = formService.getStartFormKey(processDefinition.getId());
       formKey += getTaskState("false");
     }
     return formKey ;

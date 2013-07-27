@@ -83,10 +83,8 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		CancoEngineInner cancoEngineInner = parse2EngineBean(cancoEngineRuntime);
 		identityService.setAuthenticatedUserId(cancoEngineRuntime.getUserId());
 		if (StringUtils.isEmpty(cancoEngineInner.getTaskId())) {
-			runtimeService.startProcessInstanceByKey(
-					cancoEngineInner.getBusiType(),
-					cancoEngineInner.getDataId(),
-					cancoEngineInner.getVariableMap());
+			runtimeService.startProcessInstanceByKey(cancoEngineInner.getBusiType(),cancoEngineInner.getDataId(),
+																cancoEngineInner.getVariableMap());
 			taskId = taskService.createTaskQuery()
 					.taskAssignee(cancoEngineInner.getUserId()).singleResult()
 					.getId();
@@ -96,8 +94,9 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 			String processInstanceId = historyService
 					.createHistoricTaskInstanceQuery().taskAssignee(taskId)
 					.singleResult().getProcessInstanceId();
-			taskService.addComment(taskId, processInstanceId,
-					cancoEngineInner.getAllMsg());
+			if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
+				taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
+			}
 			taskService.complete(taskId, cancoEngineInner.getVariableMap());
 			if (cancoEngineInner.isStart()) {
 				cancoEngineTaskService.drafter2Create(cancoEngineInner);
@@ -154,7 +153,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 			resultStr = resultStr.substring(0, resultStr.length() - 2);
 			resultStr += "]";
 		}
-		return resultStr;
+		return "{" + resultStr + "}";
 	}
 
 	@Override
@@ -177,11 +176,14 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 					break;
 				}
 			}
-			SpringExpressionConvert springExpressionConvert = new SpringExpressionConvert(parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString(), clientMap);
-			List<Map<String,String>> userInfos = (List<Map<String,String>>)springExpressionConvert.resolverExpression();
+			String userExpression = parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString();
+			if(StringUtils.isNotEmpty(userExpression)){
+				SpringExpressionConvert springExpressionConvert = new SpringExpressionConvert(parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString(), clientMap);
+				List<Map<String,String>> userInfos = (List<Map<String,String>>)springExpressionConvert.resolverExpression();
+				parsedMap.put(PARSE_INNER.USERS.toString(), userInfos);
+			}
 			parsedMap.remove(PARSE_INNER.EXPRESSIONS.toString());
 			parsedMap.remove(PARSE_INNER.IS_JUDGE_CONDITION.toString());
-			parsedMap.put(PARSE_INNER.USERS.toString(), userInfos);
 			parsedMap.putAll(taskInfo);
 			resultTaskInfos.add(parsedMap);
 		}
@@ -198,9 +200,9 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		List<CancoEngineDeployment> cancoEngineDeployments = new ArrayList<CancoEngineDeployment>();
 		List<ProcessDefinition> processDefinitions = null ;
 		if(StringUtils.isNotEmpty(busiType)){
-			processDefinitions = repositoryService.createProcessDefinitionQuery().processDefinitionKey(busiType).desc().list();
+			processDefinitions = repositoryService.createProcessDefinitionQuery().processDefinitionKey(busiType).orderByProcessDefinitionId().desc().list();
 		}else{
-			processDefinitions = repositoryService.createProcessDefinitionQuery().desc().list();
+			processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionId().desc().list();
 		}
 		for(ProcessDefinition processDefinition : processDefinitions){
 			CancoEngineDeployment cancoEngineDeployment = new CancoEngineDeployment();
@@ -214,7 +216,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 	}
 
 	@Override
-	public InputStream imageInputStream(String deploymentId , RESOURCE_TYPE resourceType)  {
+	public InputStream resourceInputStream(String deploymentId , RESOURCE_TYPE resourceType)  {
 		ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
 		String resourceName = "" ;
 		if("xml".equals(resourceType.toString())){

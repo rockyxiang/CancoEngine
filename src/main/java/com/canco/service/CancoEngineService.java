@@ -71,6 +71,6 @@ public interface CancoEngineService {
      * @param resourceType xml或者image
      * @return
      */
-    public InputStream imageInputStream(String deploymentId , RESOURCE_TYPE resourceType) ;
+    public InputStream resourceInputStream(String deploymentId , RESOURCE_TYPE resourceType) ;
     
 }
