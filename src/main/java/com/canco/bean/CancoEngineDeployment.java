@@ -30,6 +30,19 @@ public class CancoEngineDeployment {
 	 * 流程图名称
 	 */
 	private String processBpmnImageName ;
+	
+	/**
+	 * 流程部署版本号
+	 */
+	private int version ;
+	
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
 
 	public String getDeployId() {
 		return deployId;

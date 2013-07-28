@@ -212,6 +212,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 			cancoEngineDeployment.setProcessBpmnName(processDefinition.getResourceName());
 			cancoEngineDeployment.setProcessDefinitionName(processDefinition.getName());
 			cancoEngineDeployment.setProcessDefinitionKey(processDefinition.getKey());
+			cancoEngineDeployment.setVersion(processDefinition.getVersion());
 			cancoEngineDeployments.add(cancoEngineDeployment);
 		}
 		return cancoEngineDeployments;
