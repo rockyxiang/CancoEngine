@@ -37,6 +37,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.canco.util.TimeUtil;
+
 @Service
 public abstract class CancoEngineBaseService {
   
@@ -674,8 +676,13 @@ public abstract class CancoEngineBaseService {
             }
             Map<String, Object> activityMap = new HashMap<String, Object>();
             initFollowImageMap(activityMap, activityImpl);
-            usersBuffer.append(instance.getAssignee()).append(",");
-            activityMap.put("users", usersBuffer.substring(0, usersBuffer.length() - 1).toString());
+            Map<String,Object> localVariable = instance.getTaskLocalVariables() ;
+            usersBuffer.append(localVariable.get("userName").toString() +"["+localVariable.get("deptName").toString() +"]");
+            usersBuffer.append(",");
+            activityMap.put("assingers", usersBuffer.substring(0, usersBuffer.length() - 1).toString());
+            activityMap.put("startTime", TimeUtil.dateToString(instance.getStartTime()));
+            activityMap.put("endTime", TimeUtil.dateToString(instance.getEndTime()));
+            activityMap.put("taskId", taskId);
             resultLists.add(activityMap);
           }
         }

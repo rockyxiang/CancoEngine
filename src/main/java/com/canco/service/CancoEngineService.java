@@ -76,14 +76,15 @@ public interface CancoEngineService {
     /**
      * 流程跟踪
      * @param taskId 任务ID
-     * @return [{"taskName(环节名称)":"起草","dealUser":"","startTime":"","endTime":""}]
+     * @return [{"taskName(环节名称)":"起草","taskId(当前任务ID)":"123","assinger":"张三[123]","startTime":"","endTime":""}]
      */
     public String followText(String taskId) ;
     
     /**
      * 图形化流程跟踪
-     * @param taskId
-     * @return
+     * @param taskId 任务ID
+     * @return [{"taskName(环节名称)":"起草","taskId(当前任务ID)":"123","assingers":"张三[123],李四[124]"
+     * 							,"width":100,"height":200,"x":10,"y":100,"startTime":"","endTime":""}]
      */
     public String followImage(String taskId);
     

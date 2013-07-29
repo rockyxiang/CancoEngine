@@ -98,6 +98,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 			if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
 				taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
 			}
+			taskService.setVariables(taskId, cancoEngineInner.getVariableMap());
 			taskService.complete(taskId, cancoEngineInner.getVariableMap());
 			if (cancoEngineInner.isStart()) {
 				cancoEngineTaskService.drafter2Create(cancoEngineInner);
@@ -232,11 +233,31 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 
 	@Override
 	public String followText(String taskId) {
+		if(StringUtils.isNotEmpty(taskId)){
+			String processInstanceId = historyService.createHistoricTaskInstanceQuery().taskId(taskId)
+							.singleResult().getProcessInstanceId();
+			List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
+							.processInstanceId(processInstanceId).orderByHistoricTaskInstanceStartTime().asc().list();
+			List<Map<String,String>> jsonParse = new ArrayList<Map<String,String>>();
+			for(HistoricTaskInstance historicTaskInstance :historicTaskInstances){
+				Map<String,String> parseMap = new HashMap<String, String>();
+				parseMap.put("taskId", historicTaskInstance.getId());
+				parseMap.put("taskName", historicTaskInstance.getName());
+				parseMap.put("assinger", historicTaskInstance.getTaskLocalVariables().get("userName")+"["+historicTaskInstance.getAssignee()+"]");
+				parseMap.put("startTime", TimeUtil.dateToString(historicTaskInstance.getStartTime()));
+				parseMap.put("endTime", TimeUtil.dateToString(historicTaskInstance.getEndTime()));
+				jsonParse.add(parseMap);
+			}
+			return CancoEngineParse.list2Json(jsonParse);
+		}
 		return null;
 	}
 
 	@Override
 	public String followImage(String taskId) {
+		if(StringUtils.isNotEmpty(taskId)){
+			return CancoEngineParse.list2Json(searchCurrentInfoMapByTaskId(taskId));
+		}
 		return null;
 	}
 }

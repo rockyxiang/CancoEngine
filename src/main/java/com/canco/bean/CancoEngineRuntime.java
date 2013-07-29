@@ -129,9 +129,11 @@ public class CancoEngineRuntime {
         }
         if(StringUtils.isEmpty(getUserId())){
             variableMap.put("userId" , getUserId());
+            variableMap.put("userName", getUserName());
         }
         if(StringUtils.isEmpty(getDeptId())){
             variableMap.put("deptId" , getDeptId());
+            variableMap.put("deptName", getDeptName());
         }
         if(StringUtils.isEmpty(getCondition())){
         	if(getCondition().contains(";")){
