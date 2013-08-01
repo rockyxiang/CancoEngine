@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.canco.com/nbyh">
+  <process id="zcjysp" name="资产借用流程" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <userTask id="lysq" name="填写领用申请" activiti:assignee="${owner}" activiti:formKey="&quot;taskKey&quot;:&quot;lysq&quot;,&quot;url&quot;:&quot;action.do?method=test&quot;,&quot;save&quot;:{&quot;isdisplay&quot;:false},&quot;del&quot;:{&quot;isdisplay&quot;:true},&quot;flowgz&quot;:{&quot;isdisplay&quot;:true},&quot;deal&quot;:{&quot;require&quot;:false,&quot;isdisplay&quot;:false},&quot;taskInfo&quot;:{&quot;type&quot;:&quot;0&quot;,&quot;isStart&quot;:true,&quot;isJudgeCondition&quot;:false,&quot;users&quot;:{&quot;isSelected&quot;:true,&quot;isMultiple&quot;:false,&quot;expressions&quot;:&quot;&quot;}},&quot;ideaconfig&quot;:[{&quot;type&quot;:&quot;0&quot;,&quot;selectText&quot;:[{&quot;content&quot;:&quot;通过&quot;},{&quot;content&quot;:&quot;不通过&quot;}]}]"></userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="lysq"></sequenceFlow>
+    <userTask id="ldsp" name="领导审批" activiti:assignee="#{owner}" activiti:formKey="&quot;taskKey&quot;:&quot;ldsp&quot;,&quot;url&quot;:&quot;action.do?method=test&quot;,&quot;save&quot;:{&quot;isdisplay&quot;:false},&quot;del&quot;:{&quot;isdisplay&quot;:false},&quot;flowgz&quot;:{&quot;isdisplay&quot;:true},&quot;deal&quot;:{&quot;require&quot;:false,&quot;isdisplay&quot;:true},&quot;taskInfo&quot;:{&quot;type&quot;:&quot;0&quot;,&quot;isJudgeCondition&quot;:false,&quot;users&quot;:{&quot;isSelected&quot;:true,&quot;isMultiple&quot;:false,&quot;expressions&quot;:&quot;cancoEnginePerson.searchPersonByRoleIdAndDeptId('deptLeader',deptId)&quot;}},&quot;ideaconfig&quot;:[{&quot;type&quot;:&quot;0&quot;,&quot;selectText&quot;:[{&quot;content&quot;:&quot;通过&quot;},{&quot;content&quot;:&quot;不通过&quot;}]}]"></userTask>
+    <sequenceFlow id="flow2" sourceRef="lysq" targetRef="ldsp"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="ldsp" targetRef="exclusivegateway1"></sequenceFlow>
+    <serviceTask id="zcly" name="资产领用" activiti:class="com.canco.remote.CancoEngineRemoteService"></serviceTask>
+    <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="zcly">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isCondition=='zcly'}]]></conditionExpression>
+    </sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <sequenceFlow id="flow5" sourceRef="zcly" targetRef="endevent1"></sequenceFlow>
+    <sequenceFlow id="back1" name="退回" sourceRef="exclusivegateway1" targetRef="lysq">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${isCondition=='lysq'}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_zcjysp">
+    <bpmndi:BPMNPlane bpmnElement="zcjysp" id="BPMNPlane_zcjysp">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="140.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="220.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="380.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="550.0" y="147.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="640.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="820.0" y="150.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="lysq" id="BPMNShape_lysq">
+        <omgdc:Bounds height="55.0" width="105.0" x="220.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ldsp" id="BPMNShape_ldsp">
+        <omgdc:Bounds height="55.0" width="105.0" x="380.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="zcly" id="BPMNShape_zcly">
+        <omgdc:Bounds height="55.0" width="105.0" x="640.0" y="140.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="175.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="220.0" y="167.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="325.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="167.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="485.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="550.0" y="167.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="590.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="640.0" y="167.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="745.0" y="167.0"></omgdi:waypoint>
+        <omgdi:waypoint x="820.0" y="167.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="570.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="569.0" y="84.0"></omgdi:waypoint>
+        <omgdi:waypoint x="272.0" y="84.0"></omgdi:waypoint>
+        <omgdi:waypoint x="272.0" y="140.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="11.0" width="22.0" x="10.0" y="0.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="back1" id="BPMNEdge_back1">
+        <omgdi:waypoint x="570.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="569.0" y="84.0"></omgdi:waypoint>
+        <omgdi:waypoint x="272.0" y="84.0"></omgdi:waypoint>
+        <omgdi:waypoint x="272.0" y="140.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="11.0" width="22.0" x="10.0" y="0.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
