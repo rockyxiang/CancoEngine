@@ -73,12 +73,12 @@
 		#{procInstId,jdbcType=VARCHAR},
 		#{url,jdbcType=VARCHAR},
 		#{curUser,jdbcType=INTEGER},
+		#{curTime,jdbcType=TIMESTAMP},
 		#{submitUser,jdbcType=INTEGER},
 		#{submitDept,jdbcType=INTEGER},
 		#{applyId,jdbcType=INTEGER},
 		#{taskState,jdbcType=CHAR},
-		#{createUser,jdbcType=INTEGER},
-		#{curTime,jdbcType=TIMESTAMP}
+		#{createUser,jdbcType=INTEGER}
 		)
 	</insert>
 

@@ -34,5 +34,23 @@ comment on column JK_WF_ROLE_USER_RELATION.ROLE_ID is
 comment on column JK_WF_ROLE_USER_RELATION.USER_ID is
 '人员ID';
 
+-----------------------------------------------------------------
+create table JK_WF_TASK
+(
+	ID				char(32)		not null,
+	BUSI_TYPE		varchar2(20),
+	TASK_ID			varchar2(64),
+	PROC_INST_ID	varchar2(64),
+	URL_			varchar2(512),
+	CUR_USER		INTEGER,
+	CUR_TIME		TIMESTAMP,
+	SUBMIT_USER		INTEGER,
+	SUBMIT_DEPT		INTEGER,
+	APPLY_ID		INTEGER,
+	TASK_STATE		INTEGER,
+	CREATE_USER		INTEGER,
+	constraint JK_WF_TASK primary key (ID)
+);
+
 
 

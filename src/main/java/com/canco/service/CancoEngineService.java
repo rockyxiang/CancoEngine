@@ -27,6 +27,13 @@ public interface CancoEngineService {
 			return value;
 		}
 	}
+	
+	/**
+	 * 启动流程
+	 * @param cancoEngineRuntime
+	 * @return
+	 */
+	public String startWorkFlow(CancoEngineRuntime cancoEngineRuntime);
 
 	/**
 	 * 提交一下步处理
@@ -37,7 +44,7 @@ public interface CancoEngineService {
 	public String dealWorkFlow(CancoEngineRuntime cancoEngineRuntime);
 
 	/**
-	 * 页面初始化所需要的参数(工具条，意见，当前环节)
+	 * 页面初始化所需要的参数(工具条，意见，当前环节) 待办调用
 	 * 
 	 * @param taskId
 	 *            任务ID

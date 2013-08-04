@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
  *  人员接口
  *
  */
-@Service(value="cancoEnginePerson")
+//@Service(value="cancoEnginePerson")
 public interface CancoEnginePerson {
 	
 	/**

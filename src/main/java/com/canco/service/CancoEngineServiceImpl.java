@@ -11,6 +11,7 @@ import java.util.zip.ZipInputStream;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.apache.commons.beanutils.BeanUtils;
@@ -76,37 +77,42 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 			throw new IllegalArgumentException(sb.toString());
 		}
 	}
-
+	
 	@Transactional
-	public String dealWorkFlow(CancoEngineRuntime cancoEngineRuntime) {
-		String taskId = null;
+	public String startWorkFlow(CancoEngineRuntime cancoEngineRuntime){
 		validatorParam(cancoEngineRuntime);
 		CancoEngineInner cancoEngineInner = parse2EngineBean(cancoEngineRuntime);
 		identityService.setAuthenticatedUserId(cancoEngineRuntime.getUserId());
-		if (StringUtils.isEmpty(cancoEngineInner.getTaskId())) {
-			runtimeService.startProcessInstanceByKey(cancoEngineInner.getBusiType(),cancoEngineInner.getDataId(),
-																cancoEngineInner.getVariableMap());
-			taskId = taskService.createTaskQuery()
-					.taskAssignee(cancoEngineInner.getUserId()).singleResult()
-					.getId();
-			cancoEngineTaskService.createDrafter(cancoEngineInner);
-		} else {
-			taskId = cancoEngineInner.getTaskId();
-			String processInstanceId = historyService
-					.createHistoricTaskInstanceQuery().taskAssignee(taskId)
-					.singleResult().getProcessInstanceId();
-			if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
-				taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
-			}
-			taskService.setVariables(taskId, cancoEngineInner.getVariableMap());
-			taskService.complete(taskId, cancoEngineInner.getVariableMap());
-			if (cancoEngineInner.isStart()) {
-				cancoEngineTaskService.drafter2Create(cancoEngineInner);
-			} else {
-				cancoEngineTaskService.doing2done(cancoEngineInner);
-			}
-			createDoing(cancoEngineInner, processInstanceId);
+		ProcessInstance instance = runtimeService.startProcessInstanceByKey(cancoEngineInner.getBusiType(),cancoEngineInner.getDataId(),
+				cancoEngineInner.getVariableMap());
+		String processInstanceId = instance.getProcessInstanceId();
+		String taskId = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult().getId();	 
+		cancoEngineInner.setTaskId(taskId);
+		cancoEngineTaskService.createDrafter(cancoEngineInner);
+		return taskId ;
+	}
+
+	@Transactional
+	public String dealWorkFlow(CancoEngineRuntime cancoEngineRuntime) {
+		validatorParam(cancoEngineRuntime);
+		CancoEngineInner cancoEngineInner = parse2EngineBean(cancoEngineRuntime);
+		String processInstanceId = null ;
+		identityService.setAuthenticatedUserId(cancoEngineRuntime.getUserId());
+		String taskId = cancoEngineInner.getTaskId();
+	    processInstanceId = historyService
+				.createHistoricTaskInstanceQuery().taskAssignee(taskId)
+				.singleResult().getProcessInstanceId();
+		if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
+			taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
 		}
+		taskService.setVariables(taskId, cancoEngineInner.getVariableMap());
+		taskService.complete(taskId, cancoEngineInner.getVariableMap());
+		if(cancoEngineInner.isStart()){
+			cancoEngineTaskService.drafter2Create(cancoEngineInner);
+		}else{
+			cancoEngineTaskService.doing2done(cancoEngineInner);
+		}
+		createDoing(cancoEngineInner, processInstanceId);
 		return taskId;
 	}
 
@@ -161,7 +167,11 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 	@Override
 	public String nextInfos(String taskId , Map<String,Object> clientMap) {
 		HistoricTaskInstance historicTaskInstance =  historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
-		String processDefintionId = historicTaskInstance.getProcessDefinitionId();
+		String processDefinitonId = historicTaskInstance.getProcessDefinitionId();
+		String processDefintionKey = repositoryService.createProcessDefinitionQuery()
+				.processDefinitionId(historicTaskInstance.getProcessDefinitionId())
+				.singleResult().getKey();
+					
 		List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().processInstanceId(historicTaskInstance.getProcessInstanceId()).list();
 		for(HistoricVariableInstance variable : variables){
 			clientMap.put(variable.getVariableName(), variable.getValue());
@@ -170,10 +180,10 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		List<Map<String, String>> taskInfos = nextTaskInfos(taskId);
 		for (int i = 0, size = taskInfos.size(); i < size; i++) {
 			Map<String, String> taskInfo = taskInfos.get(i);
-			final String formKey = formService.getTaskFormKey(processDefintionId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString());
+			final String formKey = formService.getTaskFormKey(processDefinitonId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString());
 			Map<String,Object> parsedMap = CancoEngineParse.parseTaskInfo(formKey) ;
 			if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION.toString())){
-				if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionId)) {
+				if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionKey)) {
 					taskInfos.remove(i);
 					break;
 				}
