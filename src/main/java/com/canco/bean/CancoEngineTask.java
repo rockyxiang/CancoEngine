@@ -26,7 +26,7 @@ public class CancoEngineTask {
 	/**
 	 * 流程实例ID
 	 */
-	private String processInstanceId;
+	private String procInstId;
 	/**
 	 *  
 	 */
@@ -60,27 +60,22 @@ public class CancoEngineTask {
 	/**
 	 * 处理时间
 	 */
-	private Date endTime;
+	private Date curTime;
 
-	/**
-	 * 开始时间
-	 */
-	private Date startTime;
-
-	public Date getEndTime() {
-		return endTime;
+	public Date getCurTime() {
+		return curTime;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public void setCurTime(Date curTime) {
+		this.curTime = curTime;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public String getProcInstId() {
+		return procInstId;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setProcInstId(String procInstId) {
+		this.procInstId = procInstId;
 	}
 
 	/**
@@ -135,24 +130,6 @@ public class CancoEngineTask {
 	 */
 	public String getTaskId() {
 		return taskId;
-	}
-
-	/**
-	 * 流程实例ID
-	 * 
-	 * @param lcId
-	 */
-	public void setLcId(String lcId) {
-		this.processInstanceId = lcId;
-	}
-
-	/**
-	 * 流程实例ID
-	 * 
-	 * @return
-	 */
-	public String getLcId() {
-		return processInstanceId;
 	}
 
 	/**

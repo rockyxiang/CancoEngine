@@ -5,7 +5,7 @@
         <property name="dialect"  value="ORACLE" />
     </properties>
 	<typeAliases>
-		 <typeAlias alias="jkWfTask" type="com.canco.bean.JkWfTask"/><!--任务  -->
+		 <typeAlias alias="jkWfTask" type="com.canco.bean.CancoEngineTask"/><!--任务  -->
 	</typeAliases>
 	<plugins>
 		<plugin interceptor="com.canco.pagination.PaginationInterception"></plugin>

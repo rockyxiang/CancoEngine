@@ -76,7 +76,7 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 		if (StringUtils.isNotEmpty(cancoEngineInner.getDealUserId())) {
 			jkWfTask.setCurUser(Integer.parseInt(cancoEngineInner
 					.getDealUserId()));
-			jkWfTask.setEndTime(cancoEngineInner.getDealTime());
+			jkWfTask.setCurTime(cancoEngineInner.getDealTime());
 		}
 		jkWfTask.setTaskState(TASK_STATE.DONE.getValue());
 		jkWfTask.setTaskId(cancoEngineInner.getTaskId());
@@ -94,7 +94,7 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 		CancoEngineTask jkWfTask = new CancoEngineTask();
 		jkWfTask.setTaskId(cancoEngineInner.getTaskId());
 		jkWfTask.setTaskState(TASK_STATE.CREATE.getValue());
-		jkWfTask.setEndTime(cancoEngineInner.getDealTime());
+		jkWfTask.setCurTime(cancoEngineInner.getDealTime());
 		if (StringUtils.isNotEmpty(cancoEngineInner.getUserId())) {
 			jkWfTask.setCurUser(Integer.parseInt(cancoEngineInner.getUserId()));
 		}
@@ -123,7 +123,7 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 			jkWfTask.setSubmitDept(Integer.parseInt(cancoEngineInner
 					.getDeptId()));
 		}
-		jkWfTask.setLcId(cancoEngineInner.getProcInstanceId());
+		jkWfTask.setProcInstId(cancoEngineInner.getProcInstanceId());
 		jkWfTask.setTaskId(cancoEngineInner.getTaskId());
 		// TODO 此处代码将移至engine代码中 放在此处只是为了临时测试用
 		// cancoEngineInner.setDomainUrl(cancoEngineConfig.getCancoDomainUrl());

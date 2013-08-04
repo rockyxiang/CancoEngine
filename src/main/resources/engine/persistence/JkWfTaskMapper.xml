@@ -9,19 +9,15 @@
 		ID,
 		BUSI_TYPE,
 		TASK_ID,
-		LC_ID,
+		PROC_INST_ID,
 		URL_,
 		CUR_USER,
+		CUR_TIME,
 		SUBMIT_USER,
 		SUBMIT_DEPT,
 		APPLY_ID,
-		APPLY_TIME,
-		APPLY_USER,
-		APPLY_REASON,
-		APPLY_NO,
 		TASK_STATE,
-		CREATE_USER,
-		CUR_TIME
+		CREATE_USER
 	</sql>
 
 	<sql id="jkWfTaskBaseWhereSql">
@@ -36,8 +32,8 @@
 				<if test="map.taskId != null">
 					AND TASK_ID = #{map.taskId}
 				</if>
-				<if test="map.lcId != null">
-					AND LC_ID = #{map.lcId}
+				<if test="map.procInstId != null">
+					AND PROC_INST_ID = #{map.procInstId}
 				</if>
 				<if test="map.url != null">
 					AND URL_ = #{map.url}
@@ -53,18 +49,6 @@
 				</if>
 				<if test="map.applyId != null">
 					AND APPLY_ID = #{map.applyId}
-				</if>
-				<if test="map.applyTime != null">
-					AND APPLY_TIME = #{map.applyTime}
-				</if>
-				<if test="map.applyUser != null">
-					AND APPLY_USER = #{map.applyUser}
-				</if>
-				<if test="map.applyReason != null">
-					AND APPLY_REASON = #{map.applyReason}
-				</if>
-				<if test="map.applyNo != null">
-					AND APPLY_NO = #{map.applyNo}
 				</if>
 				<if test="map.taskState != null">
 					AND TASK_STATE = #{map.taskState}
@@ -84,18 +68,14 @@
 		<include refid="jkWfTaskBaseColumnSql" />
 		)VALUES(
 		#{id ,jdbcType=CHAR},
-		#{busiType,jdbcType=INTEGER},
+		#{busiType,jdbcType=VARCHAR},
 		#{taskId,jdbcType=VARCHAR},
-		#{lcId,jdbcType=VARCHAR},
+		#{procInstId,jdbcType=VARCHAR},
 		#{url,jdbcType=VARCHAR},
 		#{curUser,jdbcType=INTEGER},
 		#{submitUser,jdbcType=INTEGER},
 		#{submitDept,jdbcType=INTEGER},
 		#{applyId,jdbcType=INTEGER},
-		#{applyTime,jdbcType=TIMESTAMP},
-		#{applyUser,jdbcType=VARCHAR},
-		#{applyReason,jdbcType=VARCHAR},
-		#{applyNo,jdbcType=VARCHAR},
 		#{taskState,jdbcType=CHAR},
 		#{createUser,jdbcType=INTEGER},
 		#{curTime,jdbcType=TIMESTAMP}
@@ -108,9 +88,9 @@
 		JK_WF_TASK WHERE ID = #{id}
 	</delete>
 	
-	<delete id="deleteJkWfTaskByCurUserAndLcIdAndTaskState" parameterType="map">
+	<delete id="deleteJkWfTaskByCurUserAndprocInstIdAndTaskState" parameterType="map">
 		DELETE FROM
-		JK_WF_TASK WHERE  LC_ID = #{lcId} AND CUR_USER = #{curUser}
+		JK_WF_TASK WHERE  PROC_INST_ID = #{procInstId} AND CUR_USER = #{curUser}
 		AND TASK_STATE = #{taskState}
 	</delete>
 
@@ -120,8 +100,8 @@
 			<if test="busiType != null">
 				BUSI_TYPE = #{busiType} ,
 			</if>
-			<if test="lcId != null">
-				LC_ID = #{lcId} ,
+			<if test="procInstId != null">
+				PROC_INST_ID = #{procInstId} ,
 			</if>
 			<if test="url != null">
 				URL_ = #{url} ,
@@ -140,18 +120,6 @@
 			</if>
 			<if test="applyId != null">
 				APPLY_ID = #{applyId} ,
-			</if>
-			<if test="applyTime != null">
-				APPLY_TIME = #{applyTime} ,
-			</if>
-			<if test="applyUser != null">
-				APPLY_USER = #{applyUser} ,
-			</if>
-			<if test="applyReason != null">
-				APPLY_REASON = #{applyReason} ,
-			</if>
-			<if test="applyNo != null">
-				APPLY_NO = #{applyNo} ,
 			</if>
 			<if test="taskState != null">
 				TASK_STATE = #{taskState} ,
@@ -175,16 +143,12 @@
 		<id column="ID" property="id" />
 		<result column="BUSI_TYPE" property="busiType" />
 		<result column="TASK_ID" property="taskId" />
-		<result column="LC_ID" property="lcId" />
+		<result column="PROC_INST_ID" property="procInstId" />
 		<result column="URL_" property="url" />
 		<result column="CUR_USER" property="curUser" />
 		<result column="SUBMIT_USER" property="submitUser" />
 		<result column="SUBMIT_DEPT" property="submitDept" />
 		<result column="APPLY_ID" property="applyId" />
-		<result column="APPLY_TIME" property="applyTime" />
-		<result column="APPLY_USER" property="applyUser" />
-		<result column="APPLY_REASON" property="applyReason" />
-		<result column="APPLY_NO" property="applyNo" />
 		<result column="TASK_STATE" property="taskState" />
 		<result column="CREATE_USER" property="createUser" />
 		<result column="CUR_TIME" property="curTime" />
