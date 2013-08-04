@@ -124,18 +124,18 @@ public class CancoEngineRuntime {
         if (variableMap == null){
             setVariableMap(new HashMap<String, Object>());
         }
-        if(StringUtils.isEmpty(getDealUserId())){
+        if(StringUtils.isNotEmpty(getDealUserId())){
             variableMap.put("owner" ,  getDealUserId());
         }
-        if(StringUtils.isEmpty(getUserId())){
+        if(StringUtils.isNotEmpty(getUserId())){
             variableMap.put("userId" , getUserId());
             variableMap.put("userName", getUserName());
         }
-        if(StringUtils.isEmpty(getDeptId())){
+        if(StringUtils.isNotEmpty(getDeptId())){
             variableMap.put("deptId" , getDeptId());
             variableMap.put("deptName", getDeptName());
         }
-        if(StringUtils.isEmpty(getCondition())){
+        if(StringUtils.isNotEmpty(getCondition())){
         	if(getCondition().contains(";")){
         		String []conditions = getCondition().split(";");
         		for(String cond : conditions){
