@@ -180,7 +180,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		List<Map<String, String>> taskInfos = nextTaskInfos(taskId);
 		for (int i = 0, size = taskInfos.size(); i < size; i++) {
 			Map<String, String> taskInfo = taskInfos.get(i);
-			final String formKey = formService.getTaskFormKey(processDefinitonId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString());
+			final String formKey = "{"+formService.getTaskFormKey(processDefinitonId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString())+"}";
 			Map<String,Object> parsedMap = CancoEngineParse.parseTaskInfo(formKey) ;
 			if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION.toString())){
 				if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionKey)) {
