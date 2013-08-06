@@ -25,7 +25,7 @@ public final class CancoEngineParse {
   
   public static enum PARSE_INNER{
 	  TASK_INFO("taskInfo") ,TYPE("type") ,IS_JUDGE_CONDITION("isJudgeCondition") ,IS_SELECTED("isSelected") 
-	  ,IS_MULTIPLE("isMultiple") ,EXPRESSIONS("expressions") ,USERS("users");
+	  ,IS_MULTIPLE("isMultiple") ,EXPRESSIONS("expressions") ,USERS("users"),ROLE_ID("roleId");
 	  
 	  private String value ;
 	  
@@ -62,13 +62,14 @@ public final class CancoEngineParse {
 		resultMap.put(PARSE_INNER.IS_SELECTED.toString(), users.getBoolean(PARSE_INNER.IS_SELECTED.toString()));
 		resultMap.put(PARSE_INNER.IS_MULTIPLE.toString(), users.getBoolean(PARSE_INNER.IS_MULTIPLE.toString()));
 		resultMap.put(PARSE_INNER.EXPRESSIONS.toString(), users.getString(PARSE_INNER.EXPRESSIONS.toString()));
+		resultMap.put(PARSE_INNER.ROLE_ID.toString(), users.getString(PARSE_INNER.ROLE_ID.toString()));
 		return resultMap ;
 	}
 	return null ;
   }
   
   public static void main(String[] args) {
-    final String str = "{" + "\"taskKey\":\"\",\"url\":\"11111\",\"save\":{\"isdisplay\":false},\"del\":{\"isdisplay\":true},\"flowgz\":{\"isdisplay\":false},\"deal\":{\"require\":false,\"isdisplay\":false},\"taskInfo\":{\"type\":\"0/1(AB角)/2(会签)\",\"isJudgeCondition\":false,\"users\":{\"isSelected\":true,\"isMultiple\":false,\"expressions\":\"xxx.xxx('1',deptParam)\"}},\"ideaconfig\":[{\"type\":\"0\",\"selectText\":[{\"content\":\"同意\"},{\"content\":\"不同意\"}]}]"+"}";
+    final String str = "{" + "\"taskKey\":\"\",\"url\":\"11111\",\"save\":{\"isdisplay\":false},\"del\":{\"isdisplay\":true},\"flowgz\":{\"isdisplay\":false},\"deal\":{\"require\":false,\"isdisplay\":false},\"taskInfo\":{\"type\":\"0/1(AB角)/2(会签)\",\"isJudgeCondition\":false,\"users\":{\"isSelected\":true,\"roleId\":\"\",\"isMultiple\":false,\"expressions\":\"xxx.xxx('1',deptParam)\"}},\"ideaconfig\":[{\"type\":\"0\",\"selectText\":[{\"content\":\"同意\"},{\"content\":\"不同意\"}]}]"+"}";
     System.out.println(parseTaskInfo(str));
   }
 
