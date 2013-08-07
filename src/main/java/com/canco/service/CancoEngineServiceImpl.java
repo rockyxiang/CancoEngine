@@ -100,7 +100,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		identityService.setAuthenticatedUserId(cancoEngineRuntime.getUserId());
 		String taskId = cancoEngineInner.getTaskId();
 	    processInstanceId = historyService
-				.createHistoricTaskInstanceQuery().taskAssignee(taskId)
+				.createHistoricTaskInstanceQuery().taskId(taskId)
 				.singleResult().getProcessInstanceId();
 		if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
 			taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
