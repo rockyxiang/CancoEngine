@@ -1,6 +1,7 @@
 package com.canco.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 	public void createDoing(CancoEngineInner cancoEngineInner) {
 		LOGGER.debug("创建待办，待办ID为：{}", cancoEngineInner.getTaskId());
 		CancoEngineTask jkWfTask = engine2JkWfTask(cancoEngineInner);
-		jkWfTask.setTaskState(TASK_STATE.CREATE.getValue());
+		jkWfTask.setTaskState(TASK_STATE.DOING.getValue());
 		jkWfTaskMapper.insertJkWfTask(jkWfTask);
 	}
 
@@ -116,6 +117,7 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 		if (StringUtils.isNotEmpty(cancoEngineInner.getDealUserId())) {
 			jkWfTask.setCurUser(Integer.parseInt(cancoEngineInner
 					.getDealUserId()));
+			jkWfTask.setCurTime(new Date());
 		}
 		if (StringUtils.isNotEmpty(cancoEngineInner.getUserId())) {
 			jkWfTask.setSubmitUser(Integer.parseInt(cancoEngineInner
@@ -125,8 +127,6 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 		}
 		jkWfTask.setProcInstId(cancoEngineInner.getProcInstanceId());
 		jkWfTask.setTaskId(cancoEngineInner.getTaskId());
-		// TODO 此处代码将移至engine代码中 放在此处只是为了临时测试用
-		// cancoEngineInner.setDomainUrl(cancoEngineConfig.getCancoDomainUrl());
 		jkWfTask.setUrl(cancoEngineInner.getUrl());
 		return jkWfTask;
 	}
