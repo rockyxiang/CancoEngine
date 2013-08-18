@@ -52,20 +52,20 @@ public final class CancoEngineParse {
   }
   
   public static Map<String,Object> parseTaskInfo(final String config){
-	JSONObject json = JSON.parseObject(config);
-	JSONObject taskInfo = (JSONObject)json.get(PARSE_INNER.TASK_INFO.toString());
-	if(taskInfo != null){
-		Map<String,Object> resultMap = new HashMap<String, Object>();
-		resultMap.put(PARSE_INNER.TYPE.toString(), taskInfo.getString(PARSE_INNER.TYPE.toString()));
-		resultMap.put(PARSE_INNER.IS_JUDGE_CONDITION.toString(), taskInfo.getBoolean(PARSE_INNER.IS_JUDGE_CONDITION.toString()));
-		JSONObject users = (JSONObject)taskInfo.get(PARSE_INNER.USERS.toString());
-		resultMap.put(PARSE_INNER.IS_SELECTED.toString(), users.getBoolean(PARSE_INNER.IS_SELECTED.toString()));
-		resultMap.put(PARSE_INNER.IS_MULTIPLE.toString(), users.getBoolean(PARSE_INNER.IS_MULTIPLE.toString()));
-		resultMap.put(PARSE_INNER.EXPRESSIONS.toString(), users.getString(PARSE_INNER.EXPRESSIONS.toString()));
-		resultMap.put(PARSE_INNER.ROLE_ID.toString(), users.getString(PARSE_INNER.ROLE_ID.toString()));
-		return resultMap ;
-	}
-	return null ;
+  	JSONObject json = JSON.parseObject(config);
+  	JSONObject taskInfo = (JSONObject)json.get(PARSE_INNER.TASK_INFO.toString());
+  	if(taskInfo != null){
+  		Map<String,Object> resultMap = new HashMap<String, Object>();
+  		resultMap.put(PARSE_INNER.TYPE.toString(), taskInfo.getString(PARSE_INNER.TYPE.toString()));
+  		resultMap.put(PARSE_INNER.IS_JUDGE_CONDITION.toString(), taskInfo.getBoolean(PARSE_INNER.IS_JUDGE_CONDITION.toString()));
+  		JSONObject users = (JSONObject)taskInfo.get(PARSE_INNER.USERS.toString());
+  		resultMap.put(PARSE_INNER.IS_SELECTED.toString(), users.getBoolean(PARSE_INNER.IS_SELECTED.toString()));
+  		resultMap.put(PARSE_INNER.IS_MULTIPLE.toString(), users.getBoolean(PARSE_INNER.IS_MULTIPLE.toString()));
+  		resultMap.put(PARSE_INNER.EXPRESSIONS.toString(), users.getString(PARSE_INNER.EXPRESSIONS.toString()));
+  		resultMap.put(PARSE_INNER.ROLE_ID.toString(), users.getString(PARSE_INNER.ROLE_ID.toString()));
+  		return resultMap ;
+  	}
+  	return null ;
   }
   
   public static void main(String[] args) {

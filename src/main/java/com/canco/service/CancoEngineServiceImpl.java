@@ -28,6 +28,7 @@ import com.canco.bean.CancoEngineRuntime;
 import com.canco.config.CancoEngineConfig;
 import com.canco.ext.CancoEngineJudge;
 import com.canco.util.CancoEngineParse;
+import com.canco.util.CancoEngineParse.PARSE_ENUM;
 import com.canco.util.SpringExpressionConvert;
 import com.canco.util.TimeUtil;
 import com.canco.util.CancoEngineParse.PARSE_INNER;
@@ -89,6 +90,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		String taskId = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult().getId();	 
 		cancoEngineInner.setTaskId(taskId);
 		cancoEngineInner.setProcInstanceId(processInstanceId);
+		cancoEngineInner.setUrl(getUrl(taskId));
 		cancoEngineTaskService.createDrafter(cancoEngineInner);
 		return taskId ;
 	}
@@ -97,13 +99,10 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 	public String dealWorkFlow(CancoEngineRuntime cancoEngineRuntime) {
 		validatorParam(cancoEngineRuntime);
 		CancoEngineInner cancoEngineInner = parse2EngineBean(cancoEngineRuntime);
-		String processInstanceId = null ;
+		String processInstanceId = getProcessInstanceId(cancoEngineInner);
 		identityService.setAuthenticatedUserId(cancoEngineRuntime.getUserId());
 		String taskId = cancoEngineInner.getTaskId();
-	    processInstanceId = historyService
-				.createHistoricTaskInstanceQuery().taskId(taskId)
-				.singleResult().getProcessInstanceId();
-	  cancoEngineInner.setProcInstanceId(processInstanceId);
+	    
 		if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
 			taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
 		}
@@ -116,6 +115,24 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		}
 		createDoing(cancoEngineInner, processInstanceId);
 		return taskId;
+	}
+	
+	/**
+	 * 获取当前任务的URL
+	 * @param taskId 任务ID
+	 */
+	private String getUrl(String taskId){
+	  HistoricTaskInstance hisTask = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult() ;
+	  String formKey = "{" + formService.getTaskFormKey(hisTask.getProcessDefinitionId(), hisTask.getTaskDefinitionKey()) + "}";
+	  return CancoEngineParse.parseConfig(formKey, PARSE_ENUM.URL);
+	}
+	
+	private String getProcessInstanceId(CancoEngineInner cancoEngineInner){
+	  String processInstanceId  = historyService
+	          .createHistoricTaskInstanceQuery().taskId(cancoEngineInner.getTaskId())
+	          .singleResult().getProcessInstanceId();
+	  cancoEngineInner.setProcInstanceId(processInstanceId);
+	  return processInstanceId;
 	}
 
 	private void createDoing(CancoEngineInner cancoEngineInner, String processInstanceId) {
@@ -133,6 +150,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 						CancoEngineInner inner = (CancoEngineInner) BeanUtils.cloneBean(cancoEngineInner);
 						inner.setTaskId(task.getId());
 						inner.setDealUserId(task.getAssignee());
+						inner.setUrl(getUrl(task.getId()));
 						cancoEngineInners.add(inner);
 					} catch (IllegalAccessException e) {
 						LOGGER.error("IllegalAccessException:{}", e);
