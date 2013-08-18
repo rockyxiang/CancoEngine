@@ -55,7 +55,7 @@ public class CancoEngineInner extends CancoEngineIdea {
     if (StringUtils.isEmpty(url)) {
       return "";
     }else{
-      int lastIndexSign = url.length() - 2 ;
+      int lastIndexSign = url.length() - 1 ;
       url = "=".equals(url.substring(lastIndexSign))? url : url+"=";
     }
     if (domainUrl.lastIndexOf("\\/", domainUrl.length() - 1) != -1) {
@@ -79,5 +79,5 @@ public class CancoEngineInner extends CancoEngineIdea {
   public void setDealTime(Date dealTime) {
     this.dealTime = dealTime;
   }
-
+  
 }
