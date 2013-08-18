@@ -71,7 +71,7 @@ public class CancoEngineTaskServiceImpl implements CancoEngineTaskService {
 			parameterMap.put("curUser", cancoEngineInner.getUserId());
 			parameterMap.put("taskState", TASK_STATE.DONE.getValue());
 			jkWfTaskMapper
-					.deleteJkWfTaskByCurUserAndLcIdAndTaskState(parameterMap);
+					.deleteJkWfTaskByCurUserAndProcInstIdAndTaskState(parameterMap);
 		}
 		CancoEngineTask jkWfTask = new CancoEngineTask();
 		if (StringUtils.isNotEmpty(cancoEngineInner.getDealUserId())) {

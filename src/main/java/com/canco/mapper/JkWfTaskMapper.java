@@ -22,7 +22,7 @@ public interface JkWfTaskMapper {
   
   void updateDoing2Done(Map<String,Object> param) ;
   
-  void deleteJkWfTaskByCurUserAndLcIdAndTaskState(Map<String,String> parameterMap) ;
+  void deleteJkWfTaskByCurUserAndProcInstIdAndTaskState(Map<String,String> parameterMap) ;
 
   List<CancoEngineTask> searchJkWfTaskByParams(@Param("map") Map<String, String> map, @Param("page") Page page);
 

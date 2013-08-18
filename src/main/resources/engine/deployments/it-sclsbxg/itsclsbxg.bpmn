@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="itsclsbxg" name="IT生产类设备修改" isExecutable="true">
+    <startEvent id="startevent1" name="Start" activiti:initiator="owner" activiti:formKey="&quot;taskKey&quot;:&quot;xgsq&quot;,&quot;url&quot;:&quot;action.do?method=test&quot;,&quot;save&quot;:{&quot;isdisplay&quot;:false},&quot;del&quot;:{&quot;isdisplay&quot;:true},&quot;flowgz&quot;:{&quot;isdisplay&quot;:true},&quot;deal&quot;:{&quot;require&quot;:false,&quot;isdisplay&quot;:false},&quot;taskInfo&quot;:{&quot;type&quot;:&quot;0&quot;,&quot;isStart&quot;:true,&quot;isJudgeCondition&quot;:false,&quot;users&quot;:{&quot;isSelected&quot;:true,&quot;isMultiple&quot;:false,&quot;roleId&quot;:&quot;&quot;,&quot;expressions&quot;:&quot;&quot;}},&quot;ideaconfig&quot;:[{&quot;type&quot;:&quot;0&quot;,&quot;selectText&quot;:[{&quot;content&quot;:&quot;同意&quot;},{&quot;content&quot;:&quot;同意&quot;}]}]"></startEvent>
+    <userTask id="xgsq" name="填写修改申请" activiti:assignee="#{owner}" activiti:formKey="&quot;taskKey&quot;:&quot;xgsq&quot;,&quot;url&quot;:&quot;action.do?method=test&quot;,&quot;save&quot;:{&quot;isdisplay&quot;:false},&quot;del&quot;:{&quot;isdisplay&quot;:true},&quot;flowgz&quot;:{&quot;isdisplay&quot;:true},&quot;deal&quot;:{&quot;require&quot;:false,&quot;isdisplay&quot;:false},&quot;taskInfo&quot;:{&quot;type&quot;:&quot;0&quot;,&quot;isStart&quot;:true,&quot;isJudgeCondition&quot;:false,&quot;users&quot;:{&quot;isSelected&quot;:true,&quot;isMultiple&quot;:false,&quot;roleId&quot;:&quot;&quot;,&quot;expressions&quot;:&quot;&quot;}},&quot;ideaconfig&quot;:[{&quot;type&quot;:&quot;0&quot;,&quot;selectText&quot;:[{&quot;content&quot;:&quot;同意&quot;},{&quot;content&quot;:&quot;不同意&quot;}]}]"></userTask>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="xgsq"></sequenceFlow>
+    <userTask id="bmldsp" name="部门领导审批" activiti:assignee="#{owner}" activiti:candidateUsers="bmldsp" activiti:formKey="&quot;taskKey&quot;:&quot;bmldsp&quot;,&quot;url&quot;:&quot;action.do?method=test&quot;,&quot;save&quot;:{&quot;isdisplay&quot;:false},&quot;del&quot;:{&quot;isdisplay&quot;:true},&quot;flowgz&quot;:{&quot;isdisplay&quot;:true},&quot;deal&quot;:{&quot;require&quot;:false,&quot;isdisplay&quot;:false},&quot;taskInfo&quot;:{&quot;type&quot;:&quot;0&quot;,&quot;isStart&quot;:true,&quot;isJudgeCondition&quot;:false,&quot;users&quot;:{&quot;isSelected&quot;:true,&quot;isMultiple&quot;:false,&quot;roleId&quot;:&quot;&quot;,&quot;expressions&quot;:&quot;&quot;}},&quot;ideaconfig&quot;:[{&quot;type&quot;:&quot;0&quot;,&quot;selectText&quot;:[{&quot;content&quot;:&quot;同意&quot;},{&quot;content&quot;:&quot;不同意&quot;}]}]"></userTask>
+    <sequenceFlow id="flow2" sourceRef="xgsq" targetRef="bmldsp"></sequenceFlow>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow3" sourceRef="bmldsp" targetRef="exclusivegateway1"></sequenceFlow>
+    <endEvent id="endevent1" name="结束"></endEvent>
+    <sequenceFlow id="flow4" name="通过" sourceRef="exclusivegateway1" targetRef="endevent1">
+      <extensionElements>
+        <activiti:executionListener event="take" class="com.canco.remote.CancoEngineRemoteService"></activiti:executionListener>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${condition=='endevent1'}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="back1" name="退回起草人" sourceRef="exclusivegateway1" targetRef="xgsq">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${condition=='xgsq'}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_itsclsbxg">
+    <bpmndi:BPMNPlane bpmnElement="itsclsbxg" id="BPMNPlane_itsclsbxg">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="160.0" y="310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="420.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="580.0" y="307.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="720.0" y="310.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="xgsq" id="BPMNShape_xgsq">
+        <omgdc:Bounds height="55.0" width="105.0" x="260.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="bmldsp" id="BPMNShape_bmldsp">
+        <omgdc:Bounds height="55.0" width="105.0" x="420.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="195.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="260.0" y="327.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="365.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="327.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="525.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="580.0" y="327.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="620.0" y="327.0"></omgdi:waypoint>
+        <omgdi:waypoint x="720.0" y="327.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="11.0" width="22.0" x="10.0" y="0.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="600.0" y="307.0"></omgdi:waypoint>
+        <omgdi:waypoint x="599.0" y="236.0"></omgdi:waypoint>
+        <omgdi:waypoint x="312.0" y="236.0"></omgdi:waypoint>
+        <omgdi:waypoint x="312.0" y="300.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="11.0" width="55.0" x="10.0" y="0.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="back1" id="BPMNEdge_back1">
+        <omgdi:waypoint x="600.0" y="307.0"></omgdi:waypoint>
+        <omgdi:waypoint x="599.0" y="236.0"></omgdi:waypoint>
+        <omgdi:waypoint x="312.0" y="236.0"></omgdi:waypoint>
+        <omgdi:waypoint x="312.0" y="300.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="11.0" width="55.0" x="10.0" y="0.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

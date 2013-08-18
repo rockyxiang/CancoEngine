@@ -88,7 +88,7 @@
 		JK_WF_TASK WHERE ID = #{id}
 	</delete>
 	
-	<delete id="deleteJkWfTaskByCurUserAndprocInstIdAndTaskState" parameterType="map">
+	<delete id="deleteJkWfTaskByCurUserAndProcInstIdAndTaskState" parameterType="map">
 		DELETE FROM
 		JK_WF_TASK WHERE  PROC_INST_ID = #{procInstId} AND CUR_USER = #{curUser}
 		AND TASK_STATE = #{taskState}
