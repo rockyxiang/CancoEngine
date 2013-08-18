@@ -88,6 +88,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		String processInstanceId = instance.getProcessInstanceId();
 		String taskId = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult().getId();	 
 		cancoEngineInner.setTaskId(taskId);
+		cancoEngineInner.setProcInstanceId(processInstanceId);
 		cancoEngineTaskService.createDrafter(cancoEngineInner);
 		return taskId ;
 	}
@@ -102,6 +103,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 	    processInstanceId = historyService
 				.createHistoricTaskInstanceQuery().taskId(taskId)
 				.singleResult().getProcessInstanceId();
+	  cancoEngineInner.setProcInstanceId(processInstanceId);
 		if(StringUtils.isNotEmpty(cancoEngineInner.getAllMsg())){
 			taskService.addComment(taskId, processInstanceId,cancoEngineInner.getAllMsg());
 		}
@@ -270,4 +272,12 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		}
 		return null;
 	}
+	
+	@Override
+	public InputStream fetchFollowImage( String taskId ){
+	    String processKey = historyService.createHistoricTaskInstanceQuery().taskId(taskId)
+	          .singleResult().getProcessDefinitionId();
+	    return repositoryService.getProcessDiagram(processKey) ;
+	}
+
 }
