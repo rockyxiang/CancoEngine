@@ -112,5 +112,12 @@ public interface CancoEngineService {
 	 *         ,"width":100,"height":200,"x":10,"y":100,"startTime":"","endTime":""}]
 	 */
 	public String followImage(String taskId);
+	
+	/**
+	  * 获取图形化流程跟踪图片
+	  * 
+	  * @param taskId 任务ID
+	  */
+	public InputStream fetchFollowImage( String taskId );
 
 }
