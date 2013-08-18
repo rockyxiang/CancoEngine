@@ -142,6 +142,7 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 				Task task = tasks.get(0);
 				cancoEngineInner.setTaskId(task.getId());
 				cancoEngineInner.setDealUserId(task.getAssignee());
+				cancoEngineInner.setUrl(getUrl(task.getId()));
 				cancoEngineTaskService.createDoing(cancoEngineInner);
 			} else {
 				List<CancoEngineInner> cancoEngineInners = new ArrayList<CancoEngineInner>();
