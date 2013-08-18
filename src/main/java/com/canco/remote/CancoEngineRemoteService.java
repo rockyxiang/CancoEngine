@@ -21,10 +21,9 @@ public class CancoEngineRemoteService implements ExecutionListener{
   @Override
   public void notify(DelegateExecution delegateExecution) throws Exception {
     Map<String,Object> resultMap = new HashMap<String, Object>();
-    resultMap.putAll(delegateExecution.getVariables());
     resultMap.put("dataId", delegateExecution.getProcessBusinessKey());
-    resultMap.put("busiType", delegateExecution.getProcessDefinitionId());
-    resultMap.put("taskDefinitionKey", delegateExecution.getCurrentActivityId());
+    String []busiType = delegateExecution.getProcessDefinitionId().split(":");
+    resultMap.put("busiType", busiType[0]);
     LOGGER.info("==============CancoEngineRemoteService   execution start ==============");
     LOGGER.info("processDefinitionKey : {} , taskDefinitionKey : {} " , delegateExecution.getProcessDefinitionId() , delegateExecution.getCurrentActivityId());
     CancoEngineRemoteClient cancoEngineRemoteClient = (CancoEngineRemoteClient)SpringUtils.getBean("cancoEngineRemoteClient");
