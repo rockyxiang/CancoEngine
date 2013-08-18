@@ -54,11 +54,14 @@ public class CancoEngineInner extends CancoEngineIdea {
   public String getUrl() {
     if (StringUtils.isEmpty(url)) {
       return "";
+    }else{
+      int lastIndexSign = url.length() - 2 ;
+      url = "=".equals(url.substring(lastIndexSign))? url : url+"=";
     }
     if (domainUrl.lastIndexOf("\\/", domainUrl.length() - 1) != -1) {
-      return domainUrl + url;
+      return domainUrl + url + getDataId() + "&taskId=" + getTaskId();
     } else {
-      return domainUrl + "/" + url;
+      return domainUrl + "/" + url + getDataId() + "&taskId=" + getTaskId();
     }
   }
 
