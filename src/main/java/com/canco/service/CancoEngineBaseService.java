@@ -576,8 +576,6 @@ public abstract class CancoEngineBaseService {
   private boolean isSelectPersonByActvityBehavior(ActivityBehavior activityBehavior){
     if( activityBehavior instanceof NoneEndEventActivityBehavior ){
       return false ;
-    }else if( activityBehavior instanceof ServiceTask ){
-      return false ;
     }else{
       return true ;
     }
