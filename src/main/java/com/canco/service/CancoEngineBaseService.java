@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -566,10 +567,20 @@ public abstract class CancoEngineBaseService {
     Map<String, String> resultMap = new HashMap<String, String>();
     resultMap.put(WORK_FLOW_ELMENTS.TASK_KEY.toString(), pvm.getId());
     resultMap.put(WORK_FLOW_ELMENTS.TASK_NAME.toString(), pvm.getProperty("name").toString());
-    boolean isSelectPerson = (activityBehavior instanceof NoneEndEventActivityBehavior) ? false : true;
+    boolean isSelectPerson = isSelectPersonByActvityBehavior(activityBehavior);
     resultMap.put(WORK_FLOW_ELMENTS.IS_SELECTED_PERSON.toString(), String.valueOf(isSelectPerson));
     resultMap.put(WORK_FLOW_ELMENTS.FLOW_ID.toString(), flowId);
     results.add(resultMap);
+  }
+  
+  private boolean isSelectPersonByActvityBehavior(ActivityBehavior activityBehavior){
+    if( activityBehavior instanceof NoneEndEventActivityBehavior ){
+      return false ;
+    }else if( activityBehavior instanceof ServiceTask ){
+      return false ;
+    }else{
+      return true ;
+    }
   }
 
   public List<Map<String, String>> nextTaskInfos(String taskId) {

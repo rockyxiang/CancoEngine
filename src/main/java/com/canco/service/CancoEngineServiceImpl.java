@@ -27,6 +27,7 @@ import com.canco.bean.CancoEngineInner;
 import com.canco.bean.CancoEngineRuntime;
 import com.canco.config.CancoEngineConfig;
 import com.canco.ext.CancoEngineJudge;
+import com.canco.service.CancoEngineBaseService.WORK_FLOW_ELMENTS;
 import com.canco.util.CancoEngineParse;
 import com.canco.util.CancoEngineParse.PARSE_ENUM;
 import com.canco.util.SpringExpressionConvert;
@@ -201,24 +202,31 @@ public class CancoEngineServiceImpl extends CancoEngineBaseService implements Ca
 		List<Map<String, String>> taskInfos = nextTaskInfos(taskId);
 		for (int i = 0, size = taskInfos.size(); i < size; i++) {
 			Map<String, String> taskInfo = taskInfos.get(i);
-			final String formKey = "{"+formService.getTaskFormKey(processDefinitonId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString())+"}";
-			Map<String,Object> parsedMap = CancoEngineParse.parseTaskInfo(formKey) ;
-			if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION.toString())){
-				if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionKey)) {
-					taskInfos.remove(i);
-					break;
-				}
+			if("true".equals(taskInfo.get(WORK_FLOW_ELMENTS.IS_SELECTED_PERSON.toString()))){
+			  final String formKey = "{"+formService.getTaskFormKey(processDefinitonId, taskInfo.get(WORK_FLOW_ELMENTS.TASK_KEY.toString()).toString())+"}";
+	      Map<String,Object> parsedMap = CancoEngineParse.parseTaskInfo(formKey) ;
+	      if((Boolean)parsedMap.get(CancoEngineParse.PARSE_INNER.IS_JUDGE_CONDITION.toString())){
+	        if (!cancoEngineJudge.isJudgeFlowCondition(taskInfo.get("flowId"),processDefintionKey)) {
+	          taskInfos.remove(i);
+	          break;
+	        }
+	      }
+	      String userExpression = parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString();
+	      if(StringUtils.isNotEmpty(userExpression)){
+	        SpringExpressionConvert springExpressionConvert = new SpringExpressionConvert(parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString(), clientMap);
+	        List<Map<String,String>> userInfos = (List<Map<String,String>>)springExpressionConvert.resolverExpression();
+	        parsedMap.put(PARSE_INNER.USERS.toString(), userInfos);
+	      }
+	      parsedMap.remove(PARSE_INNER.EXPRESSIONS.toString());
+	      parsedMap.remove(PARSE_INNER.IS_JUDGE_CONDITION.toString());
+	      parsedMap.putAll(taskInfo);
+	      resultTaskInfos.add(parsedMap);
+			}else{
+			  Map<String,Object> parsedMap = new HashMap<String, Object>();
+			  parsedMap.putAll(taskInfo);
+			  resultTaskInfos.add(parsedMap);
 			}
-			String userExpression = parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString();
-			if(StringUtils.isNotEmpty(userExpression)){
-				SpringExpressionConvert springExpressionConvert = new SpringExpressionConvert(parsedMap.get(PARSE_INNER.EXPRESSIONS.toString()).toString(), clientMap);
-				List<Map<String,String>> userInfos = (List<Map<String,String>>)springExpressionConvert.resolverExpression();
-				parsedMap.put(PARSE_INNER.USERS.toString(), userInfos);
-			}
-			parsedMap.remove(PARSE_INNER.EXPRESSIONS.toString());
-			parsedMap.remove(PARSE_INNER.IS_JUDGE_CONDITION.toString());
-			parsedMap.putAll(taskInfo);
-			resultTaskInfos.add(parsedMap);
+			
 		}
 		return CancoEngineParse.list2Json(resultTaskInfos);
 	}
